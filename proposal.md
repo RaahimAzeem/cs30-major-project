@@ -15,7 +15,7 @@ Sudoku
 
 
 ## Nice to Have List
-- Randomly generate different grids for each level, each time and have a solved version of each. 
+- Randomly generate different grids for each level, each time. 
 - Allowing the user to place in numbers by clicking a number from a number row on the screen along with the option of using the keyboard or the numpad.
 - Making it responsive so that it works on any device.
 - Sound Effects 
