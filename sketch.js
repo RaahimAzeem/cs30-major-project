@@ -6,8 +6,10 @@
 // - 
 
 let state = "start screen";
-let grid, cols, rows;
-let w = 40;
+let grid;
+let cols = 9; 
+let rows = 9;
+let w = 50;
 
 // Defining a class for each cell in the grid
 class Cell {
@@ -37,12 +39,6 @@ class Cell {
   reveal() {
     this.revealed = true;
   }
-
-  // Function to place marker on the cell
-  placeMarker() {
-    this.marker = !this.marker;
-  }
-
 }
 
 
@@ -52,8 +48,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   
   // Calculate the number of columns and rows based on the canvas size and cell width. Generate the game grid as well
-  cols = Math.floor(width / w);
-  rows = Math.floor(height / w);
+  // cols = Math.floor(width / w);
+  // rows = Math.floor(height / w);
   grid = generateGrid(cols, rows);
 
   for (let y = 0; y < rows; y++) {
@@ -94,6 +90,13 @@ function determineState() {
 
 function gameScreen() {
   background(255);
+
+  // Initially, displays the each cell in the grid
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      grid[y][x].show();
+    }
+  }
 }
 
 function startScreen() {
