@@ -6,10 +6,77 @@
 // - 
 
 let state = "start screen";
-let grid;
+let grid, cols, rows;
+let w = 40;
+
+// Defining a class for each cell in the grid
+class Cell {
+  constructor(i, j, w) {
+    // initializing cell properties
+    this.i = i;
+    this.j = j;
+    this.x = i * w;
+    this.y = j * w;
+    this.w = w;
+  }
+  
+  // Function to display the cell
+  show() {
+    // Cell Borders
+    stroke(0);
+    noFill();
+    square(this.x, this.y, this.w);
+  }
+
+  // Method to check if a given point is within the cell
+  cellContains(x, y) {
+    return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w;
+  }
+
+  // Function to reveal the cell
+  reveal() {
+    this.revealed = true;
+  }
+
+  // Function to place marker on the cell
+  placeMarker() {
+    this.marker = !this.marker;
+  }
+
+}
+
+
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  
+  // Calculate the number of columns and rows based on the canvas size and cell width. Generate the game grid as well
+  cols = Math.floor(width / w);
+  rows = Math.floor(height / w);
+  grid = generateGrid(cols, rows);
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      grid[y][x] = new Cell(y, x, w);
+    }
+  }
+}
+
+// Function to generate game grid with a specified number of rows and columns
+function generateGrid(cols, rows) {
+
+  // Create an array with the specified number of rows
+  let emptyArray = new Array(rows);
+
+  // Loop through each row in the array
+  for (let i = 0; i < emptyArray.length; i++) {
+
+    // Initialize each row as an array with the specified number of columns
+    emptyArray[i] = new Array(cols);
+  }
+
+  return emptyArray;
 }
 
 function draw() {
