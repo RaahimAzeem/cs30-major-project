@@ -13,19 +13,17 @@ let w = 50;
 
 // Defining a class for each cell in the grid
 class Cell {
-  constructor(i, j, w) {
+  constructor(y, x, w) {
     // initializing cell properties
-    this.i = i;
-    this.j = j;
-    this.x = i * w;
-    this.y = j * w;
+    this.x = x * w;
+    this.y = y * w;
     this.w = w;
   }
   
   // Function to display the cell
   show() {
     // Cell Borders
-    stroke(0);
+    strokeWeight(1);
     noFill();
     square(this.x, this.y, this.w);
   }
@@ -41,20 +39,15 @@ class Cell {
   }
 }
 
-
-
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
-  // Calculate the number of columns and rows based on the canvas size and cell width. Generate the game grid as well
-  // cols = Math.floor(width / w);
-  // rows = Math.floor(height / w);
+
   grid = generateGrid(cols, rows);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = new Cell(y, x, w);
+
     }
   }
 }
@@ -95,6 +88,15 @@ function gameScreen() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x].show();
+
+      if (y === 0 && (x === 3 || x === 6)) {
+        strokeWeight(4);
+        line(x * w,y * w,x * w, cols * w);
+      }
+      else if (x === 0 && (y === 3 || y === 6)) {
+        strokeWeight(4);
+        line(x * w,y * w, rows * w,y * w);
+      }
     }
   }
 }
