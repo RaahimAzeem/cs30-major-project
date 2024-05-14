@@ -89,6 +89,7 @@ function gameScreen() {
     for (let x = 0; x < cols; x++) {
       grid[y][x].show();
 
+      // Outlining the grid so it looks like a sudoku grid
       if (y === 0 && (x === 3 || x === 6)) {
         strokeWeight(4);
         line(x * w,y * w,x * w, cols * w);
