@@ -27,16 +27,6 @@ class Cell {
     noFill();
     square(this.x, this.y, this.w);
   }
-
-  // Method to check if a given point is within the cell
-  cellContains(x, y) {
-    return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w;
-  }
-
-  // Function to reveal the cell
-  reveal() {
-    this.revealed = true;
-  }
 }
 
 function setup() {
@@ -88,18 +78,21 @@ function gameScreen() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x].show();
-
       // Outlining the grid so it looks like a sudoku grid
-      if (y === 0 && (x === 3 || x === 6)) {
-        strokeWeight(4);
+      if (y === 0 && (x === 3 || x === 6 )) {
+        strokeWeight(5);
         line(x * w,y * w,x * w, cols * w);
       }
       else if (x === 0 && (y === 3 || y === 6)) {
-        strokeWeight(4);
+        strokeWeight(5);
         line(x * w,y * w, rows * w,y * w);
       }
     }
   }
+}
+
+function safeToPlaceNumber() {
+  
 }
 
 function startScreen() {
