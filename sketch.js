@@ -89,12 +89,20 @@ function gameScreen() {
       }
     }
   }
+
+  instructions();
 }
+
 
 function safeToPlaceNumber() {
   
 }
 
+function instructions() {
+  fill(0);
+  textSize(20);
+  text("A 9x9 square must be filled in with numbers from 1-9 with no repeated numbers in each line, horizontally or vertically. To challenge you more, there are 3x3 squares marked out in the grid, and each of these squares can’t have any repeat numbers either. ", 500, 20);
+}
 function startScreen() {
   background(0);
   square(width/2, height/2, 100);
