@@ -79,6 +79,15 @@ function setup() {
       grid[y][x] = new Cell(y, x, w, easyLevel[y][x]);
     }
   }
+
+  // Add a button to solve the Sudoku
+  let solveButton = createButton("Solve");
+  solveButton.position(width/2, height/2);
+  solveButton.mousePressed(handleSolveButtonClick);
+}
+
+function handleSolveButtonClick() {
+  solveGrid(grid);
 }
 
 // Function to generate game grid with a specified number of rows and columns
@@ -127,15 +136,15 @@ function gameScreen() {
 
 function safeToPlaceNumber(grid, y, x, num) {
   // Check the row for the number
-  for (let x = 0; x < cols; x++) {
-    if (grid[y][x].value === num) {
+  for (let col = 0; col < cols; col++) {
+    if (grid[y][col].value === num) {
       return false;
     }
   }
 
   // Check the column for the number
-  for (let y = 0; y < rows; y++) {
-    if (grid[y][x].value === num) {
+  for (let row = 0; row < rows; row++) {
+    if (grid[row][x].value === num) {
       return false;
     }
   }
@@ -145,9 +154,9 @@ function safeToPlaceNumber(grid, y, x, num) {
   let startCol = Math.floor(x / 3) * 3;
 
   // Check the 3x3 subgrid for the number
-  for (let y = startRow; y < startRow + 3; y++) {
-    for (let x = startCol; x < startCol + 3; x++) {
-      if (grid[y][x].value === num) {
+  for (let row = startRow; row < startRow + 3; row++) {
+    for (let col = startCol; col < startCol + 3; col++) {
+      if (grid[row][col].value === num) {
         return false;
       }
     }
@@ -156,8 +165,6 @@ function safeToPlaceNumber(grid, y, x, num) {
   // If the number is not found in the row, column, or subgrid, it's safe to place
   return true;
 }
-
-
 
 function instructions() {
   fill(0);
@@ -214,4 +221,27 @@ function keyPressed() {
       console.log("Mistakes:" + mistakes);
     }
   }
+}
+
+function solveGrid(grid, y = 0, x = 0) {
+  if (y === 9) {
+    return true;
+  }
+  if (x === 9) {
+    return solveGrid(grid, y + 1, 0);
+  }
+  if (grid[y][x].value !== 0) {
+    return solveGrid(grid, y, x + 1);
+  }
+
+  for (let num = 1; num <= 9; num++) {
+    if (safeToPlaceNumber(grid, y, x, num)) {
+      grid[y][x].value = num;
+      if (solveGrid(grid, y, x + 1)) {
+        return true;
+      }
+      grid[y][x].value = 0;
+    }
+  }
+  return false;
 }
