@@ -13,9 +13,10 @@ let w = 50;
 let value = 0;
 let mistakes = 0;
 let selectedCell = null;
+let choice;
 
-// Easy level Sudoku grid
-let easyLevel = [
+// Medium level Sudoku grid
+let mediumLevel = [
   [ 3, 0, 6, 5, 0, 8, 4, 0, 0 ],
   [ 5, 2, 0, 0, 0, 0, 0, 0, 0 ],
   [ 0, 8, 7, 0, 0, 0, 0, 3, 1 ],
@@ -29,13 +30,16 @@ let easyLevel = [
 
 // Defining a class for each cell in the grid
 class Cell {
-  constructor(y, x, w, value) {
+  constructor(y, x, w, value, r, g, b) {
     // initializing cell properties
     this.x = x * w;
     this.y = y * w;
     this.w = w;
     this.value = value;
     this.clicked = false; 
+    this.r = r;
+    this.g = g;
+    this.b = b;
   }
   
   // Function to display the cell
@@ -50,7 +54,7 @@ class Cell {
     if (this.value !== 0) {
       textAlign(CENTER, CENTER);
       textSize(20);
-      fill(0);
+      fill(this.r, this.g, this.b);
       text(this.value, this.x + this.w / 2, this.y + this.w / 2);
     }
 
@@ -67,7 +71,7 @@ class Cell {
   update() {
     this.clicked = !this.clicked;
   }
-
+  
 } 
 
 function setup() {
@@ -76,10 +80,12 @@ function setup() {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
 
+  choice = mediumLevel;
+
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = new Cell(y, x, w, easyLevel[y][x]);
-      solvedGrid[y][x] = new Cell(y, x, w, easyLevel[y][x]);
+      grid[y][x] = new Cell(y, x, w, choice[y][x],0,0,0);
+      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],0,0,0);
     }
   }
 
@@ -235,13 +241,16 @@ function solveGrid(grid, y = 0, x = 0) {
 }
 
 function keyPressed() {
-  if (selectedCell && selectedCell.value === 0) {
+  if (selectedCell && selectedCell.value === 0 || selectedCell && mistakes > 0) {
     let num = int(key);
     if (num >= 1 && num <= 9) {
       let y = selectedCell.y / w;
       let x = selectedCell.x / w;
 
       if (num === solvedGrid[y][x].value) {
+        selectedCell.r = 0;
+        selectedCell.g = 0;
+        selectedCell.b = 0;
         selectedCell.value = num;
         selectedCell.clicked = false;
         selectedCell = null;
@@ -249,6 +258,11 @@ function keyPressed() {
       }
       
       else {
+        selectedCell.r = 255;
+        selectedCell.g = 0;
+        selectedCell.b = 0;
+        selectedCell.value = num;
+
         mistakes++;
         console.log("ERROR! You have made " + mistakes + " mistakes!");
       }
