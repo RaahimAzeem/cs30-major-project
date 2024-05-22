@@ -6,7 +6,7 @@
 // - 
 
 let state = "start screen";
-let grid, answeredGrid;
+let grid, solvedGrid;
 let cols = 9; 
 let rows = 9;
 let w = 50;
@@ -68,32 +68,23 @@ class Cell {
     this.clicked = !this.clicked;
   }
 
-  hide() {
-    noFill();
-    square(this.x, this.y, this.w);
-  }
 } 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   grid = generateGrid(cols, rows);
-  answeredGrid = generateGrid(cols,rows);
+  solvedGrid = generateGrid(cols, rows);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = new Cell(y, x, w, easyLevel[y][x]);
+      solvedGrid[y][x] = new Cell(y, x, w, easyLevel[y][x]);
     }
   }
 
-  // Add a button to solve the Sudoku
-  let solveButton = createButton("Solve");
-  solveButton.position(width/2, height/2);
-  solveButton.mousePressed(handleSolveButtonClick);
-}
 
-function handleSolveButtonClick() {
-  solveGrid(grid);
+  solveGrid(solvedGrid);
 }
 
 // Function to generate game grid with a specified number of rows and columns
@@ -142,15 +133,15 @@ function gameScreen() {
 
 function safeToPlaceNumber(grid, y, x, num) {
   // Check the row for the number
-  for (let col = 0; col < cols; col++) {
-    if (grid[y][col].value === num) {
+  for (let x = 0; x < cols; x++) {
+    if (grid[y][x].value === num) {
       return false;
     }
   }
 
   // Check the column for the number
-  for (let row = 0; row < rows; row++) {
-    if (grid[row][x].value === num) {
+  for (let y = 0; y < rows; y++) {
+    if (grid[y][x].value === num) {
       return false;
     }
   }
@@ -175,7 +166,7 @@ function safeToPlaceNumber(grid, y, x, num) {
 function instructions() {
   fill(0);
   textSize(20);
-  text("A 9x9 square must be filled in with numbers from 1-9 with no repeated numbers in each line, horizontally or vertically. To challenge you more, there are 3x3 squares marked out in the grid, and each of these squares can’t have any repeat numbers either.", 500, 20);
+  text("A r.", 500, 20);
 }
 
 function startScreen() {
@@ -210,25 +201,6 @@ function mousePressed() {
   }
 }
 
-function keyPressed() {
-  if (selectedCell && selectedCell.value === 0 && state === "game screen") {
-    let num = int(key);
-    if (num >= 1 && num <= 9) {
-      let y = selectedCell.y / w;
-      let x = selectedCell.x / w;
-      if (safeToPlaceNumber(grid, y, x, num)) {
-        selectedCell.value = num;
-        selectedCell.clicked = false;
-        selectedCell = null;
-      }
-    }
-    else if (!safeToPlaceNumber) {
-      mistakes++;
-      console.log("Mistakes:" + mistakes);
-    }
-  }
-}
-
 function solveGrid(grid, y = 0, x = 0) {
   // Solved the grid as a whole so returns true
   if (y === 9) {
@@ -248,14 +220,38 @@ function solveGrid(grid, y = 0, x = 0) {
   // Looping through the numbers and checking if it's safe to place the number in the cell. If yes, then recursively calling the function to move on to the next cell
   for (let num = 1; num <= 9; num++) {
     if (safeToPlaceNumber(grid, y, x, num)) {
-      grid[y][x].value = num;
+      solvedGrid[y][x].value = num;
       if (solveGrid(grid, y, x + 1)) {
         return true;
       }
-      grid[y][x].value = 0;
+      else {
+        solvedGrid[y][x].value = 0;
+      }
     }
   }
 
   // If no solution works, return false
   return false;
+}
+
+function keyPressed() {
+  if (selectedCell && selectedCell.value === 0) {
+    let num = int(key);
+    if (num >= 1 && num <= 9) {
+      let y = selectedCell.y / w;
+      let x = selectedCell.x / w;
+
+      if (num === solvedGrid[y][x].value) {
+        selectedCell.value = num;
+        selectedCell.clicked = false;
+        selectedCell = null;
+        console.log("CORRECT!");
+      }
+      
+      else {
+        mistakes++;
+        console.log("ERROR! You have made " + mistakes + " mistakes!");
+      }
+    }
+  }
 }
