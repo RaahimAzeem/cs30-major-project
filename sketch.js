@@ -58,10 +58,11 @@ class Cell {
       text(this.value, this.x + this.w / 2, this.y + this.w / 2);
     }
 
-    if (this.clicked && this.value === 0) {
+    if (this.clicked && this.value === 0 || this.clicked && this.r !== 0) {
       fill(200, 200, 255, 150);
       square(this.x, this.y, this.w);
     }
+
   }
 
   cellClicked(x, y) {
@@ -91,6 +92,10 @@ function setup() {
 
 
   solveGrid(solvedGrid);
+
+  let revealAnswerButton = createButton("Reveal Answer");
+  revealAnswerButton.position(width/2, height/2);
+  revealAnswerButton.mousePressed(revealAnswer);
 }
 
 // Function to generate game grid with a specified number of rows and columns
@@ -211,6 +216,7 @@ function solveGrid(grid, y = 0, x = 0) {
   // Solved the grid as a whole so returns true
   if (y === 9) {
     return true;
+    
   }
 
   // Once it gets to the end of the row, recursively calls back the function but this time moving on to the next row and setting the column back at 0
@@ -241,7 +247,7 @@ function solveGrid(grid, y = 0, x = 0) {
 }
 
 function keyPressed() {
-  if (selectedCell && selectedCell.value === 0 || selectedCell && mistakes > 0) {
+  if (selectedCell && selectedCell.value === 0 || selectedCell && selectedCell.r !== 0) {
     let num = int(key);
     if (num >= 1 && num <= 9) {
       let y = selectedCell.y / w;
@@ -254,7 +260,6 @@ function keyPressed() {
         selectedCell.value = num;
         selectedCell.clicked = false;
         selectedCell = null;
-        console.log("CORRECT!");
       }
       
       else {
@@ -262,10 +267,20 @@ function keyPressed() {
         selectedCell.g = 0;
         selectedCell.b = 0;
         selectedCell.value = num;
-
+        selectedCell.clicked = false;
+        selectedCell = null;
+        
         mistakes++;
         console.log("ERROR! You have made " + mistakes + " mistakes!");
       }
+    }
+  }
+}
+
+function revealAnswer() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      grid[y][x] = solvedGrid[y][x];
     }
   }
 }
