@@ -9,7 +9,7 @@ let state = "start screen";
 let grid, solvedGrid;
 let cols = 9; 
 let rows = 9;
-let w = 50;
+let w = 65;
 let value = 0;
 let mistakes = 0;
 let selectedCell = null;
@@ -28,6 +28,29 @@ let mediumLevel = [
   [ 0, 0, 5, 2, 0, 6, 3, 0, 0 ],
 ];
 
+let easyLevel = [
+  [7, 8, 0, 4, 0, 0, 1, 2, 0],
+  [6, 0, 0, 0, 7, 5, 0, 0, 9],
+  [0, 0, 0, 6, 0, 1, 0, 7, 8],
+  [0, 0, 7, 0, 4, 0, 2, 6, 0],
+  [0, 0, 1, 0, 5, 0, 9, 3, 0],
+  [9, 0, 4, 0, 6, 0, 0, 0, 5],
+  [0, 7, 0, 3, 0, 0, 0, 1, 2],
+  [1, 2, 0, 0, 0, 7, 4, 0, 0],
+  [0, 4, 9, 2, 0, 6, 0, 0, 7],
+];
+
+let hardLevel = [
+  [3, 0, 0, 0, 5, 0, 7, 0, 0],
+  [0, 5, 0, 0, 1, 0, 3, 0, 6],
+  [0, 8, 6, 0, 0, 0, 0, 0, 0],
+  [9, 0, 4, 0, 0, 5, 2, 0, 0],
+  [2, 0, 0, 3, 7, 0, 0, 0, 5],
+  [0, 3, 0, 1, 0, 0, 4, 6, 0],
+  [5, 0, 0, 2, 0, 0, 0, 7, 0],
+  [0, 0, 0, 0, 0, 0, 9, 0, 3],
+  [1, 0, 0, 7, 4, 0, 0, 0, 2],
+];
 // Defining a class for each cell in the grid
 class Cell {
   constructor(y, x, w, value, r, g, b) {
@@ -53,15 +76,17 @@ class Cell {
     // Display number if cell has a value
     if (this.value !== 0) {
       textAlign(CENTER, CENTER);
-      textSize(20);
+      textSize(30);
       fill(this.r, this.g, this.b);
       text(this.value, this.x + this.w / 2, this.y + this.w / 2);
     }
 
-    if (this.clicked && this.value === 0 || this.clicked && this.r !== 0) {
+    if (this.clicked && this.value === 0|| this.clicked && this.r !== 0) {
       fill(200, 200, 255, 150);
       square(this.x, this.y, this.w);
     }
+
+
 
   }
 
@@ -73,6 +98,12 @@ class Cell {
     this.clicked = !this.clicked;
   }
   
+  highlight() {
+    if (this.clicked) {
+      fill(200, 200, 255, 150);
+      square(this.x, this.y, this.w);
+    }
+  }
 } 
 
 function setup() {
@@ -81,7 +112,7 @@ function setup() {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
 
-  choice = mediumLevel;
+  choice = hardLevel;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -281,6 +312,16 @@ function revealAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = solvedGrid[y][x];
+    }
+  }
+}
+
+function highlightAllOtherCells(grid) {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (grid[y][x].value === selectedCell.value) {
+        grid[y][x].highlight();
+      }
     }
   }
 }
