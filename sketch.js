@@ -124,9 +124,7 @@ function setup() {
 
   solveGrid(solvedGrid);
 
-  let revealAnswerButton = createButton("Reveal Answer");
-  revealAnswerButton.position(width/2, height/2);
-  revealAnswerButton.mousePressed(revealAnswer);
+  
 }
 
 // Function to generate game grid with a specified number of rows and columns
@@ -154,6 +152,9 @@ function determineState() {
 
 function gameScreen() {
   background(255);
+  let revealAnswerButton = createButton("Reveal Answer");
+  revealAnswerButton.position(width/2, height/2);
+  revealAnswerButton.mousePressed(revealAnswer);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
