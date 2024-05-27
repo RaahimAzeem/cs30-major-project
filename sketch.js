@@ -6,6 +6,7 @@
 // - 
 
 let state = "start screen";
+let easyButton, mediumButton, hardButton;
 let grid, solvedGrid;
 let cols = 9; 
 let rows = 9;
@@ -14,6 +15,21 @@ let value = 0;
 let mistakes = 0;
 let selectedCell = null;
 let choice;
+
+
+let numberSelected;
+
+let easyLevel = [
+  [7, 8, 0, 4, 0, 0, 1, 2, 0],
+  [6, 0, 0, 0, 7, 5, 0, 0, 9],
+  [0, 0, 0, 6, 0, 1, 0, 7, 8],
+  [0, 0, 7, 0, 4, 0, 2, 6, 0],
+  [0, 0, 1, 0, 5, 0, 9, 3, 0],
+  [9, 0, 4, 0, 6, 0, 0, 0, 5],
+  [0, 7, 0, 3, 0, 0, 0, 1, 2],
+  [1, 2, 0, 0, 0, 7, 4, 0, 0],
+  [0, 4, 9, 2, 0, 6, 0, 0, 7],
+];
 
 // Medium level Sudoku grid
 let mediumLevel = [
@@ -28,17 +44,6 @@ let mediumLevel = [
   [ 0, 0, 5, 2, 0, 6, 3, 0, 0 ],
 ];
 
-let easyLevel = [
-  [7, 8, 0, 4, 0, 0, 1, 2, 0],
-  [6, 0, 0, 0, 7, 5, 0, 0, 9],
-  [0, 0, 0, 6, 0, 1, 0, 7, 8],
-  [0, 0, 7, 0, 4, 0, 2, 6, 0],
-  [0, 0, 1, 0, 5, 0, 9, 3, 0],
-  [9, 0, 4, 0, 6, 0, 0, 0, 5],
-  [0, 7, 0, 3, 0, 0, 0, 1, 2],
-  [1, 2, 0, 0, 0, 7, 4, 0, 0],
-  [0, 4, 9, 2, 0, 6, 0, 0, 7],
-];
 
 let hardLevel = [
   [3, 0, 0, 0, 5, 0, 7, 0, 0],
@@ -86,8 +91,6 @@ class Cell {
       square(this.x, this.y, this.w);
     }
 
-
-
   }
 
   cellClicked(x, y) {
@@ -97,17 +100,34 @@ class Cell {
   update() {
     this.clicked = !this.clicked;
   }
-  
+
   highlight() {
-    if (this.clicked) {
-      fill(200, 200, 255, 150);
-      square(this.x, this.y, this.w);
-    }
+    fill(200, 200, 255, 150);
+    square(this.x, this.y, this.w);
   }
+  
 } 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  easyButton = new Clickable();
+  easyButton.locate(width/2 - 100,height/2);
+  easyButton.onPress = easyWasPressed;
+  easyButton.resize(200,50);
+  easyButton.text = "Easy Level";
+
+  mediumButton = new Clickable();
+  mediumButton.locate(width/2 - 100,height/2 + 100);
+  mediumButton.onPress = mediumWasPressed;
+  mediumButton.resize(200,50);
+  mediumButton.text = "Medium Level";
+  
+  hardButton = new Clickable();
+  hardButton.locate(width/2 - 100,height/2 + 200);
+  hardButton.onPress = hardWasPressed;
+  hardButton.resize(200,50);
+  hardButton.text = "Hard Level";
 
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
@@ -144,10 +164,28 @@ function draw() {
 function determineState() {
   if (state === "start screen") {
     startScreen();
+    easyButton.draw();
+    mediumButton.draw();
+    hardButton.draw();
   } 
   else if (state === "game screen") {
     gameScreen();
   }
+}
+
+function easyWasPressed() {
+  state = "game screen";
+  choice = easyLevel;
+}
+
+function mediumWasPressed() {
+  state = "game screen";
+  choice = mediumLevel;
+}
+
+function hardWasPressed() {
+  state = "game screen";
+  choice = hardLevel;
 }
 
 function gameScreen() {
@@ -220,13 +258,13 @@ function startScreen() {
   text("Sudoku", width / 2, height / 2 - 60);
   textSize(24);
   text("Click the square to start", width / 2, height / 2 - 20);
-  square(width / 2 - 50, height / 2, 100);
+  // square(width / 2 - 50, height / 2, 100);
 }
 
 function mousePressed() {
-  if (state === "start screen" && mouseX > width / 2 - 50 && mouseX < width / 2 + 50 && mouseY > height / 2 && mouseY < height / 2 + 100) {
-    state = "game screen";
-  }
+  // if (state === "start screen" && mouseX > width / 2 - 50 && mouseX < width / 2 + 50 && mouseY > height / 2 && mouseY < height / 2 + 100) {
+  //   state = "game screen";
+  // }
 
   if (state === "game screen") {
     for (let y = 0; y < rows; y++) {
@@ -320,7 +358,7 @@ function revealAnswer() {
 function highlightAllOtherCells(grid) {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      if (grid[y][x].value === selectedCell.value) {
+      if (numberSelected === selectedCell.value) {
         grid[y][x].highlight();
       }
     }
