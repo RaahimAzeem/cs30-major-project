@@ -11,12 +11,14 @@ let grid, solvedGrid;
 let cols = 9; 
 let rows = 9;
 let w = 65;
+let r = 0;
+let g = 0;
+let b = 0;
 let value = 0;
 let mistakes = 0;
+
 let selectedCell = null;
 let choice;
-
-
 let numberSelected;
 
 let easyLevel = [
@@ -56,6 +58,7 @@ let hardLevel = [
   [0, 0, 0, 0, 0, 0, 9, 0, 3],
   [1, 0, 0, 7, 4, 0, 0, 0, 2],
 ];
+
 // Defining a class for each cell in the grid
 class Cell {
   constructor(y, x, w, value, r, g, b) {
@@ -91,6 +94,10 @@ class Cell {
       square(this.x, this.y, this.w);
     }
 
+    if (this.value === numberSelected) {
+      fill(200, 200, 255, 150);
+      square(this.x, this.y, this.w);
+    }
   }
 
   cellClicked(x, y) {
@@ -100,51 +107,49 @@ class Cell {
   update() {
     this.clicked = !this.clicked;
   }
-
-  highlight() {
-    fill(200, 200, 255, 150);
-    square(this.x, this.y, this.w);
-  }
   
 } 
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  // eslint-disable-next-line no-undef
   easyButton = new Clickable();
-  easyButton.locate(width/2 - 100,height/2);
+  easyButton.locate(width/2 - 100, height/2);
   easyButton.onPress = easyWasPressed;
   easyButton.resize(200,50);
   easyButton.text = "Easy Level";
+  easyButton.textSize = 24;
 
+  // eslint-disable-next-line no-undef
   mediumButton = new Clickable();
   mediumButton.locate(width/2 - 100,height/2 + 100);
   mediumButton.onPress = mediumWasPressed;
   mediumButton.resize(200,50);
   mediumButton.text = "Medium Level";
-  
+  mediumButton.textSize = 24;
+
+  // eslint-disable-next-line no-undef
   hardButton = new Clickable();
   hardButton.locate(width/2 - 100,height/2 + 200);
   hardButton.onPress = hardWasPressed;
   hardButton.resize(200,50);
   hardButton.text = "Hard Level";
+  hardButton.textSize = 24;
+
 
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
 
-  choice = hardLevel;
+  choice = mediumLevel;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = new Cell(y, x, w, choice[y][x],0,0,0);
-      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],0,0,0);
+      grid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
+      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
     }
   }
-
-
   solveGrid(solvedGrid);
-
-  
 }
 
 // Function to generate game grid with a specified number of rows and columns
@@ -255,17 +260,12 @@ function startScreen() {
   fill(255);
   textAlign(CENTER, CENTER);
   textSize(32);
-  text("Sudoku", width / 2, height / 2 - 60);
+  text("Sudoku", width / 2, height / 2 - 80);
   textSize(24);
-  text("Click the square to start", width / 2, height / 2 - 20);
-  // square(width / 2 - 50, height / 2, 100);
+  text("Click the square to start", width / 2, height / 2 - 40);
 }
 
 function mousePressed() {
-  // if (state === "start screen" && mouseX > width / 2 - 50 && mouseX < width / 2 + 50 && mouseY > height / 2 && mouseY < height / 2 + 100) {
-  //   state = "game screen";
-  // }
-
   if (state === "game screen") {
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
@@ -275,7 +275,11 @@ function mousePressed() {
           }
           grid[y][x].update();
           selectedCell = grid[y][x];
-          
+          numberSelected = null;
+
+          if (selectedCell.value !== 0) {
+            numberSelected = selectedCell.value;
+          }
         }
       }
     }
@@ -283,7 +287,7 @@ function mousePressed() {
 }
 
 function solveGrid(grid, y = 0, x = 0) {
-  // Solved the grid as a whole so returns true
+  // Solved the grid as a whole so returns true (Base Case)
   if (y === 9) {
     return true;
     
@@ -330,6 +334,8 @@ function keyPressed() {
         selectedCell.value = num;
         selectedCell.clicked = false;
         selectedCell = null;
+        numberSelected = null;
+
       }
       
       else {
@@ -351,16 +357,6 @@ function revealAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = solvedGrid[y][x];
-    }
-  }
-}
-
-function highlightAllOtherCells(grid) {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      if (numberSelected === selectedCell.value) {
-        grid[y][x].highlight();
-      }
     }
   }
 }
