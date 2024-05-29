@@ -16,11 +16,13 @@ let g = 0;
 let b = 0;
 let value = 0;
 let mistakes = 0;
+let levelDifficulty = "";
 
 let selectedCell = null;
 let choice;
 let numberSelected;
 
+// Easy Level Sudoku Grid
 let easyLevel = [
   [7, 8, 0, 4, 0, 0, 1, 2, 0],
   [6, 0, 0, 0, 7, 5, 0, 0, 9],
@@ -35,18 +37,18 @@ let easyLevel = [
 
 // Medium level Sudoku grid
 let mediumLevel = [
-  [ 3, 0, 6, 5, 0, 8, 4, 0, 0 ],
-  [ 5, 2, 0, 0, 0, 0, 0, 0, 0 ],
-  [ 0, 8, 7, 0, 0, 0, 0, 3, 1 ],
-  [ 0, 0, 3, 0, 1, 0, 0, 8, 0 ],
-  [ 9, 0, 0, 8, 6, 3, 0, 0, 5 ],
-  [ 0, 5, 0, 0, 9, 0, 6, 0, 0 ],
-  [ 1, 3, 0, 0, 0, 0, 2, 5, 0 ],
-  [ 0, 0, 0, 0, 0, 0, 0, 7, 4 ],
-  [ 0, 0, 5, 2, 0, 6, 3, 0, 0 ],
+  [3, 0, 6, 5, 0, 8, 4, 0, 0],
+  [5, 2, 0, 0, 0, 0, 0, 0, 0],
+  [0, 8, 7, 0, 0, 0, 0, 3, 1],
+  [0, 0, 3, 0, 1, 0, 0, 8, 0],
+  [9, 0, 0, 8, 6, 3, 0, 0, 5],
+  [0, 5, 0, 0, 9, 0, 6, 0, 0],
+  [1, 3, 0, 0, 0, 0, 2, 5, 0],
+  [0, 0, 0, 0, 0, 0, 0, 7, 4],
+  [0, 0, 5, 2, 0, 6, 3, 0, 0],
 ];
 
-
+// Hard level Sudoku grid
 let hardLevel = [
   [3, 0, 0, 0, 5, 0, 7, 0, 0],
   [0, 5, 0, 0, 1, 0, 3, 0, 6],
@@ -89,7 +91,7 @@ class Cell {
       text(this.value, this.x + this.w / 2, this.y + this.w / 2);
     }
 
-    if (this.clicked && this.value === 0|| this.clicked && this.r !== 0) {
+    if (this.clicked && this.value === 0 || this.clicked && this.r !== 0) {
       fill(200, 200, 255, 150);
       square(this.x, this.y, this.w);
     }
@@ -116,7 +118,11 @@ function setup() {
   // eslint-disable-next-line no-undef
   easyButton = new Clickable();
   easyButton.locate(width/2 - 100, height/2);
-  easyButton.onPress = easyWasPressed;
+  // easyButton.onPress = easyWasPressed;
+  easyButton.onPress = function(){
+    state = "game screen";
+    levelDifficulty = "easy";
+  };
   easyButton.resize(200,50);
   easyButton.text = "Easy Level";
   easyButton.textSize = 24;
@@ -124,7 +130,11 @@ function setup() {
   // eslint-disable-next-line no-undef
   mediumButton = new Clickable();
   mediumButton.locate(width/2 - 100,height/2 + 100);
-  mediumButton.onPress = mediumWasPressed;
+  // mediumButton.onPress = mediumWasPressed;
+  mediumButton.onPress = function(){
+    state = "game screen";
+    levelDifficulty = "medium";
+  };
   mediumButton.resize(200,50);
   mediumButton.text = "Medium Level";
   mediumButton.textSize = 24;
@@ -132,7 +142,11 @@ function setup() {
   // eslint-disable-next-line no-undef
   hardButton = new Clickable();
   hardButton.locate(width/2 - 100,height/2 + 200);
-  hardButton.onPress = hardWasPressed;
+  // hardButton.onPress = hardWasPressed;
+  hardButton.onPress = function(){
+    state = "game screen";
+    levelDifficulty = "hard";
+  };
   hardButton.resize(200,50);
   hardButton.text = "Hard Level";
   hardButton.textSize = 24;
@@ -141,12 +155,24 @@ function setup() {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
 
-  choice = mediumLevel;
+  if (levelDifficulty === "easy") {
+    levelDifficulty = easyLevel;
+  }
+
+  else if (levelDifficulty === "medium") {
+    levelDifficulty = mediumLevel;
+  }
+
+  else if (levelDifficulty === "hard") {
+    levelDifficulty = hardLevel;
+  }
+
+  levelDifficulty = easyLevel;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
-      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
+      grid[y][x] = new Cell(y, x, w, levelDifficulty[y][x],r,g,b);
+      solvedGrid[y][x] = new Cell(y, x, w, levelDifficulty[y][x],r,g,b);
     }
   }
   solveGrid(solvedGrid);
@@ -178,20 +204,20 @@ function determineState() {
   }
 }
 
-function easyWasPressed() {
-  state = "game screen";
-  choice = easyLevel;
-}
+// function easyWasPressed() {
+//   state = "game screen";
+//   choice = easyLevel;
+// }
 
-function mediumWasPressed() {
-  state = "game screen";
-  choice = mediumLevel;
-}
+// function mediumWasPressed() {
+//   state = "game screen";
+//   choice = mediumLevel;
+// }
 
-function hardWasPressed() {
-  state = "game screen";
-  choice = hardLevel;
-}
+// function hardWasPressed() {
+//   state = "game screen";
+//   choice = hardLevel;
+// }
 
 function gameScreen() {
   background(255);
