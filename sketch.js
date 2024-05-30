@@ -1,7 +1,9 @@
 // CS30 Major Project (Sudoku)
 // Muhammad Raahim
 // June 14, 2024
-//
+// 
+// Citations: 
+// https://masteringsudoku.com/sudoku-rules-beginners/
 // Extra for Experts:
 // - 
 
@@ -21,6 +23,9 @@ let levelDifficulty = "";
 let selectedCell = null;
 let choice;
 let numberSelected;
+let clearedGrid;
+
+let canvasPosition;
 
 // Easy Level Sudoku Grid
 let easyLevel = [
@@ -114,6 +119,10 @@ class Cell {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  // canvasPosition = createCanvas(windowWidth, windowHeight);
+  // let canvasX = 200;
+  // let canvasY = (windowHeight - 600)/2;
+  // canvasPosition.position(canvasX,canvasY);
 
   // eslint-disable-next-line no-undef
   easyButton = new Clickable();
@@ -154,25 +163,27 @@ function setup() {
 
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
+  clearedGrid = generateGrid(cols, rows);
 
   if (levelDifficulty === "easy") {
-    levelDifficulty = easyLevel;
+    choice = easyLevel;
   }
 
   else if (levelDifficulty === "medium") {
-    levelDifficulty = mediumLevel;
+    choice = mediumLevel;
   }
 
   else if (levelDifficulty === "hard") {
-    levelDifficulty = hardLevel;
+    choice = hardLevel;
   }
 
-  levelDifficulty = easyLevel;
+  choice = easyLevel;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = new Cell(y, x, w, levelDifficulty[y][x],r,g,b);
-      solvedGrid[y][x] = new Cell(y, x, w, levelDifficulty[y][x],r,g,b);
+      grid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
+      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
+      clearedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
     }
   }
   solveGrid(solvedGrid);
@@ -224,6 +235,10 @@ function gameScreen() {
   let revealAnswerButton = createButton("Reveal Answer");
   revealAnswerButton.position(width/2, height/2);
   revealAnswerButton.mousePressed(revealAnswer);
+  
+  let clearButton = createButton("Clear");
+  clearButton.position(width/2 + 200, height/2 + 200);
+  clearButton.mousePressed(clearAnswer);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -240,7 +255,7 @@ function gameScreen() {
     }
   }
 
-  // instructions();
+  instructions();
 }
 
 function safeToPlaceNumber(grid, y, x, num) {
@@ -277,8 +292,12 @@ function safeToPlaceNumber(grid, y, x, num) {
 
 function instructions() {
   fill(0);
-  textSize(20);
-  text("A r.", 500, 20);
+  textSize(30);
+  text("Instructions:", width/2 + 200, 20);
+  text("1. Place in numbers using the keyboard in the empty cells", width/2 + 185, 60);
+  text("2. Each row must contain the numbers 1-9 exactly once each", width/2 + 200, 120);
+  text("3. Each column must contain the numbers 1-9 exactly once each", width/2 + 218, 180);
+  text("4. Each 3x3 box must contain the numbers 1-9 exactly once each", width/2 + 221, 240);
 }
 
 function startScreen() {
@@ -383,6 +402,13 @@ function revealAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = solvedGrid[y][x];
+    }
+  }
+}
+function clearAnswer() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      grid[y][x] = clearedGrid[y][x];
     }
   }
 }
