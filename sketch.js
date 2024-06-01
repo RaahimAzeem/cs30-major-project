@@ -21,7 +21,6 @@ let mistakes = 0;
 let levelDifficulty = "";
 
 let selectedCell = null;
-let choice;
 let numberSelected;
 let clearedGrid;
 
@@ -131,6 +130,7 @@ function setup() {
   easyButton.onPress = function(){
     state = "game screen";
     levelDifficulty = "easy";
+    initializeGrids(easyLevel);
   };
   easyButton.resize(200,50);
   easyButton.text = "Easy Level";
@@ -143,6 +143,7 @@ function setup() {
   mediumButton.onPress = function(){
     state = "game screen";
     levelDifficulty = "medium";
+    initializeGrids(mediumLevel);
   };
   mediumButton.resize(200,50);
   mediumButton.text = "Medium Level";
@@ -155,35 +156,23 @@ function setup() {
   hardButton.onPress = function(){
     state = "game screen";
     levelDifficulty = "hard";
+    initializeGrids(hardLevel);
   };
   hardButton.resize(200,50);
   hardButton.text = "Hard Level";
   hardButton.textSize = 24;
+}
 
-
+function initializeGrids(level) {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
   clearedGrid = generateGrid(cols, rows);
 
-  if (levelDifficulty === "easy") {
-    choice = easyLevel;
-  }
-
-  else if (levelDifficulty === "medium") {
-    choice = mediumLevel;
-  }
-
-  else if (levelDifficulty === "hard") {
-    choice = hardLevel;
-  }
-
-  choice = easyLevel;
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
-      solvedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
-      clearedGrid[y][x] = new Cell(y, x, w, choice[y][x],r,g,b);
+      grid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
+      solvedGrid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
+      clearedGrid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
     }
   }
   solveGrid(solvedGrid);
@@ -401,14 +390,20 @@ function keyPressed() {
 function revealAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = solvedGrid[y][x];
+      grid[y][x].value = solvedGrid[y][x].value;
+      grid[y][x].r = solvedGrid[y][x].r;
+      grid[y][x].g = solvedGrid[y][x].g;
+      grid[y][x].b = solvedGrid[y][x].b;
     }
   }
 }
 function clearAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      grid[y][x] = clearedGrid[y][x];
+      grid[y][x].value = clearedGrid[y][x].value;
+      grid[y][x].r = clearedGrid[y][x].r;
+      grid[y][x].g = clearedGrid[y][x].g;
+      grid[y][x].b = clearedGrid[y][x].b;
     }
   }
 }
