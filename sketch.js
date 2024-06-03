@@ -8,7 +8,7 @@
 // - 
 
 let state = "start screen";
-let easyButton, mediumButton, hardButton;
+let easyButton, mediumButton, hardButton, homeButton, revealAnswerButton, clearButton;
 let grid, solvedGrid;
 let cols = 9; 
 let rows = 9;
@@ -161,6 +161,33 @@ function setup() {
   hardButton.resize(200,50);
   hardButton.text = "Hard Level";
   hardButton.textSize = 24;
+
+  // eslint-disable-next-line no-undef
+  homeButton = new Clickable();
+  homeButton.locate(width/2,height/2);
+  // hardButton.onPress = hardWasPressed;
+  homeButton.onPress = function(){
+    state = "start screen";
+  };
+  homeButton.resize(200,50);
+  homeButton.text = "Home";
+  homeButton.textSize = 24;
+  
+  // eslint-disable-next-line no-undef
+  revealAnswerButton = new Clickable();
+  revealAnswerButton.locate(width/2 + 200,height/2);
+  revealAnswerButton.onPress = revealAnswer;
+  revealAnswerButton.resize(200,50);
+  revealAnswerButton.text = "Reveal Answer";
+  revealAnswerButton.textSize = 24;
+
+  // eslint-disable-next-line no-undef
+  clearButton = new Clickable();
+  clearButton.locate(width/2 + 400,height/2);
+  clearButton.onPress = clearAnswer;
+  clearButton.resize(200,50);
+  clearButton.text = "Clear ";
+  clearButton.textSize = 24;
 }
 
 function initializeGrids(level) {
@@ -221,13 +248,17 @@ function determineState() {
 
 function gameScreen() {
   background(255);
-  let revealAnswerButton = createButton("Reveal Answer");
-  revealAnswerButton.position(width/2, height/2);
-  revealAnswerButton.mousePressed(revealAnswer);
+  homeButton.draw();
+  revealAnswerButton.draw();
+  clearButton.draw();
   
-  let clearButton = createButton("Clear");
-  clearButton.position(width/2 + 200, height/2 + 200);
-  clearButton.mousePressed(clearAnswer);
+  // let revealAnswerButton = createButton("Reveal Answer");
+  // revealAnswerButton.position(width/2, height/2);
+  // revealAnswerButton.mousePressed(revealAnswer);
+  
+  // let clearButton = createButton("Clear");
+  // clearButton.position(width/2 + 200, height/2 + 200);
+  // clearButton.mousePressed(clearAnswer);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -385,6 +416,7 @@ function keyPressed() {
       }
     }
   }
+  
 }
 
 function revealAnswer() {
