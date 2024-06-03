@@ -20,9 +20,11 @@ let value = 0;
 let mistakes = 0;
 let levelDifficulty = "";
 
+let answerRevealed;
 let selectedCell = null;
 let numberSelected;
 let clearedGrid;
+let numberRow;
 
 let canvasPosition;
 
@@ -63,6 +65,11 @@ let hardLevel = [
   [5, 0, 0, 2, 0, 0, 0, 7, 0],
   [0, 0, 0, 0, 0, 0, 9, 0, 3],
   [1, 0, 0, 7, 4, 0, 0, 0, 2],
+];
+
+// Hard level Sudoku grid
+let numberRowSelect = [
+  [1, 2, 3, 4, 5, 6, 7, 8, 9],
 ];
 
 // Defining a class for each cell in the grid
@@ -114,6 +121,43 @@ class Cell {
     this.clicked = !this.clicked;
   }
   
+}
+
+// Defining a class for each cell in the grid
+class Cell2 {
+  constructor(y, x, w, value) {
+    // initializing cell properties
+    this.x = x * w;
+    this.y = y * w;
+    this.w = w;
+    this.value = value;
+    this.clicked = false; 
+  }
+  
+  // Function to display the cell
+  show() {
+    // Cell Borders
+    strokeWeight(2);
+    noFill();
+    square(this.x, this.y, this.w);
+    
+    // Display number if cell has a value
+    if (this.value !== 0) {
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      fill(this.r, this.g, this.b);
+      text(this.value, this.x + this.w / 2, this.y + this.w / 2);
+    }
+
+  }
+
+  cellClicked(x, y) {
+    return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w;
+  }
+  
+  update() {
+    this.clicked = !this.clicked;
+  }
 } 
 
 function setup() {
@@ -168,6 +212,7 @@ function setup() {
   // hardButton.onPress = hardWasPressed;
   homeButton.onPress = function(){
     state = "start screen";
+    numberSelected = null;
   };
   homeButton.resize(200,50);
   homeButton.text = "Home";
@@ -175,7 +220,7 @@ function setup() {
   
   // eslint-disable-next-line no-undef
   revealAnswerButton = new Clickable();
-  revealAnswerButton.locate(width/2 + 200,height/2);
+  revealAnswerButton.locate(width/2 + 220,height/2);
   revealAnswerButton.onPress = revealAnswer;
   revealAnswerButton.resize(200,50);
   revealAnswerButton.text = "Reveal Answer";
@@ -183,7 +228,7 @@ function setup() {
 
   // eslint-disable-next-line no-undef
   clearButton = new Clickable();
-  clearButton.locate(width/2 + 400,height/2);
+  clearButton.locate(width/2 + 440,height/2);
   clearButton.onPress = clearAnswer;
   clearButton.resize(200,50);
   clearButton.text = "Clear ";
@@ -194,14 +239,19 @@ function initializeGrids(level) {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
   clearedGrid = generateGrid(cols, rows);
+  // numberRow = generateGrid(9,1);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       grid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
       solvedGrid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
       clearedGrid[y][x] = new Cell(y, x, w, level[y][x],r,g,b);
+      // numberRow[y][x] = new Cell2(y,x,w, numberRowSelect[y][x]);
     }
   }
+
+
+  
   solveGrid(solvedGrid);
 }
 
@@ -315,19 +365,16 @@ function instructions() {
   textSize(30);
   text("Instructions:", width/2 + 200, 20);
   text("1. Place in numbers using the keyboard in the empty cells", width/2 + 185, 60);
-  text("2. Each row must contain the numbers 1-9 exactly once each", width/2 + 200, 120);
-  text("3. Each column must contain the numbers 1-9 exactly once each", width/2 + 218, 180);
-  text("4. Each 3x3 box must contain the numbers 1-9 exactly once each", width/2 + 221, 240);
+  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", width/2 + 400, 120);
+  text("3. You can use backspace to remove the number", width/2 + 218, 180);
 }
 
 function startScreen() {
   background(0);
   fill(255);
   textAlign(CENTER, CENTER);
-  textSize(32);
+  textSize(52);
   text("Sudoku", width / 2, height / 2 - 80);
-  textSize(24);
-  text("Click the square to start", width / 2, height / 2 - 40);
 }
 
 function mousePressed() {
@@ -434,7 +481,9 @@ function revealAnswer() {
       grid[y][x].b = solvedGrid[y][x].b;
     }
   }
+  answerRevealed = true;
 }
+
 function clearAnswer() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
