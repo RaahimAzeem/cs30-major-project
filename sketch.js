@@ -417,6 +417,12 @@ function keyPressed() {
     }
   }
   
+  if (selectedCell && selectedCell.value !== 0 && keyCode === BACKSPACE && selectedCell.r !== 0) {
+    selectedCell.value = 0;
+    selectedCell.clicked = false;
+    selectedCell = null;
+    numberSelected = null;
+  }
 }
 
 function revealAnswer() {
