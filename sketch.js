@@ -281,21 +281,6 @@ function determineState() {
   }
 }
 
-// function easyWasPressed() {
-//   state = "game screen";
-//   choice = easyLevel;
-// }
-
-// function mediumWasPressed() {
-//   state = "game screen";
-//   choice = mediumLevel;
-// }
-
-// function hardWasPressed() {
-//   state = "game screen";
-//   choice = hardLevel;
-// }
-
 function gameScreen() {
   background(255);
   homeButton.draw();
@@ -326,6 +311,7 @@ function gameScreen() {
   }
 
   instructions();
+  
 }
 
 function safeToPlaceNumber(grid, y, x, num) {
@@ -464,6 +450,7 @@ function keyPressed() {
     }
   }
   
+  
   if (selectedCell && selectedCell.value !== 0 && keyCode === BACKSPACE && selectedCell.r !== 0) {
     selectedCell.value = 0;
     selectedCell.clicked = false;
@@ -482,6 +469,7 @@ function revealAnswer() {
     }
   }
   answerRevealed = true;
+  gameWin();
 }
 
 function clearAnswer() {
@@ -492,5 +480,11 @@ function clearAnswer() {
       grid[y][x].g = clearedGrid[y][x].g;
       grid[y][x].b = clearedGrid[y][x].b;
     }
+  }
+}
+
+function gameWin() {
+  if (answerRevealed) {
+    console.log("LEVEL COMPLETED!");
   }
 }
