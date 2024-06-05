@@ -8,6 +8,7 @@
 // - 
 
 let state = "start screen";
+let counter = 0;
 let easyButton, mediumButton, hardButton, homeButton, revealAnswerButton, clearButton;
 let grid, solvedGrid;
 let cols = 9; 
@@ -249,9 +250,6 @@ function initializeGrids(level) {
       // numberRow[y][x] = new Cell2(y,x,w, numberRowSelect[y][x]);
     }
   }
-
-
-  
   solveGrid(solvedGrid);
 }
 
@@ -286,14 +284,6 @@ function gameScreen() {
   homeButton.draw();
   revealAnswerButton.draw();
   clearButton.draw();
-  
-  // let revealAnswerButton = createButton("Reveal Answer");
-  // revealAnswerButton.position(width/2, height/2);
-  // revealAnswerButton.mousePressed(revealAnswer);
-  
-  // let clearButton = createButton("Clear");
-  // clearButton.position(width/2 + 200, height/2 + 200);
-  // clearButton.mousePressed(clearAnswer);
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
@@ -306,12 +296,12 @@ function gameScreen() {
       if (x === 0 && (y === 3 || y === 6)) {
         strokeWeight(5);
         line(x * w, y * w, rows * w, y * w);
-      }
+      } 
     }
   }
 
   instructions();
-  
+  text("Mistakes: " + mistakes, 10*w + 20, 400);
 }
 
 function safeToPlaceNumber(grid, y, x, num) {
@@ -349,10 +339,10 @@ function safeToPlaceNumber(grid, y, x, num) {
 function instructions() {
   fill(0);
   textSize(30);
-  text("Instructions:", width/2 + 200, 20);
-  text("1. Place in numbers using the keyboard in the empty cells", width/2 + 185, 60);
-  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", width/2 + 400, 120);
-  text("3. You can use backspace to remove the number", width/2 + 218, 180);
+  text("Instructions:", 10*w + 20, 20);
+  text("1. Place in numbers using the keyboard in the empty cells", 10*w + 20, 60);
+  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", 10*w + 20, 120);
+  text("3. You can use backspace to remove the number", 10*w + 20, 180);
 }
 
 function startScreen() {
