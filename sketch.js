@@ -162,9 +162,9 @@ class Cell2 {
 } 
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, 650);
   // canvasPosition = createCanvas(windowWidth, windowHeight);
-  // let canvasX = 200;
+  // let canvasX = 500;
   // let canvasY = (windowHeight - 600)/2;
   // canvasPosition.position(canvasX,canvasY);
 
@@ -209,29 +209,29 @@ function setup() {
 
   // eslint-disable-next-line no-undef
   homeButton = new Clickable();
-  homeButton.locate(width/2,height/2);
+  homeButton.locate(2,600);
   // hardButton.onPress = hardWasPressed;
   homeButton.onPress = function(){
     state = "start screen";
     numberSelected = null;
   };
-  homeButton.resize(200,50);
+  homeButton.resize(180,50);
   homeButton.text = "Home";
   homeButton.textSize = 24;
   
   // eslint-disable-next-line no-undef
   revealAnswerButton = new Clickable();
-  revealAnswerButton.locate(width/2 + 220,height/2);
+  revealAnswerButton.locate(202,600);
   revealAnswerButton.onPress = revealAnswer;
-  revealAnswerButton.resize(200,50);
+  revealAnswerButton.resize(180,50);
   revealAnswerButton.text = "Reveal Answer";
   revealAnswerButton.textSize = 24;
 
   // eslint-disable-next-line no-undef
   clearButton = new Clickable();
-  clearButton.locate(width/2 + 440,height/2);
+  clearButton.locate(402,600);
   clearButton.onPress = clearAnswer;
-  clearButton.resize(200,50);
+  clearButton.resize(180,50);
   clearButton.text = "Clear ";
   clearButton.textSize = 24;
 }
@@ -300,8 +300,8 @@ function gameScreen() {
     }
   }
 
-  instructions();
-  text("Mistakes: " + mistakes, 10*w + 20, 400);
+  // instructions();
+  text("Mistakes: " + mistakes, 675, 100);
 }
 
 function safeToPlaceNumber(grid, y, x, num) {
@@ -339,10 +339,11 @@ function safeToPlaceNumber(grid, y, x, num) {
 function instructions() {
   fill(0);
   textSize(30);
-  text("Instructions:", 10*w + 20, 20);
-  text("1. Place in numbers using the keyboard in the empty cells", 10*w + 300, 60);
-  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", 10*w + 500, 120);
-  text("3. You can use backspace to remove the number", 10*w + 300, 180);
+  textAlign(LEFT);
+  text("Instructions:", 0, 20);
+  text("1. Place in numbers using the keyboard in the empty cells", 0 , 60);
+  text("2. Each row, column and 3x3 box must contain the numbers 1-9 once each", 0, 120);
+  text("3. You can use backspace to remove the number", 0, 180);
 }
 
 function startScreen() {
