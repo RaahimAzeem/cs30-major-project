@@ -340,9 +340,9 @@ function instructions() {
   fill(0);
   textSize(30);
   text("Instructions:", 10*w + 20, 20);
-  text("1. Place in numbers using the keyboard in the empty cells", 10*w + 20, 60);
-  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", 10*w + 20, 120);
-  text("3. You can use backspace to remove the number", 10*w + 20, 180);
+  text("1. Place in numbers using the keyboard in the empty cells", 10*w + 300, 60);
+  text("2. Each row, column and 3x3 box must contain the numbers 1-9 exactly once each", 10*w + 500, 120);
+  text("3. You can use backspace to remove the number", 10*w + 300, 180);
 }
 
 function startScreen() {
@@ -351,6 +351,7 @@ function startScreen() {
   textAlign(CENTER, CENTER);
   textSize(52);
   text("Sudoku", width / 2, height / 2 - 80);
+  mistakes = 0;
 }
 
 function mousePressed() {

@@ -8,4 +8,9 @@
 - Should have sound effects.
 
 ## Non-Programmer's advice:
-- 
+- Well made, the game operates perfectly when played.
+- The instructions are clear for the player to understand.
+- All options are working fine.
+- Should add a victory sign or 'you win' sign at the end when the game is completed.
+
+
