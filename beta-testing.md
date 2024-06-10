@@ -1,6 +1,6 @@
 # Beta Testing 
 
-## Programmer's advice (Heath):
+## Programmer's advice:
 - Good game, it works properly when I played this game.  
 - Add a highlight function when it highlights all the other cells which have the same number as the one clicked. 
 - Should add a victory screen at the completion of the game. 

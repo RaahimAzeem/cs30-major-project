@@ -168,9 +168,13 @@ function setup() {
   // let canvasY = (windowHeight - 600)/2;
   // canvasPosition.position(canvasX,canvasY);
 
+  buttons();
+}
+
+function buttons() { 
   // eslint-disable-next-line no-undef
   easyButton = new Clickable();
-  easyButton.locate(width/2 - 100, height/2);
+  easyButton.locate(width / 2 - 100, height/2);
   // easyButton.onPress = easyWasPressed;
   easyButton.onPress = function(){
     state = "game screen";
@@ -183,7 +187,7 @@ function setup() {
 
   // eslint-disable-next-line no-undef
   mediumButton = new Clickable();
-  mediumButton.locate(width/2 - 100,height/2 + 100);
+  mediumButton.locate(width / 2 - 100,height/2 + 100);
   // mediumButton.onPress = mediumWasPressed;
   mediumButton.onPress = function(){
     state = "game screen";
@@ -196,7 +200,7 @@ function setup() {
 
   // eslint-disable-next-line no-undef
   hardButton = new Clickable();
-  hardButton.locate(width/2 - 100,height/2 + 200);
+  hardButton.locate(width / 2 - 100,height/2 + 200);
   // hardButton.onPress = hardWasPressed;
   hardButton.onPress = function(){
     state = "game screen";
@@ -235,7 +239,6 @@ function setup() {
   clearButton.text = "Clear ";
   clearButton.textSize = 24;
 }
-
 function initializeGrids(level) {
   grid = generateGrid(cols, rows);
   solvedGrid = generateGrid(cols, rows);
@@ -270,9 +273,7 @@ function draw() {
 function determineState() {
   if (state === "start screen") {
     startScreen();
-    easyButton.draw();
-    mediumButton.draw();
-    hardButton.draw();
+    
   } 
   else if (state === "game screen") {
     gameScreen();
@@ -348,10 +349,13 @@ function instructions() {
 
 function startScreen() {
   background(0);
+  easyButton.draw();
+  mediumButton.draw();
+  hardButton.draw();
   fill(255);
   textAlign(CENTER, CENTER);
   textSize(52);
-  text("Sudoku", width / 2, height / 2 - 80);
+  text("Sudoku",width / 2, height / 2 - 80);
   mistakes = 0;
 }
 

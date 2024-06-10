@@ -1,14 +1,22 @@
 html, body {
   margin: 0;
-  display: flex;
+  display: flex ;
 
   /* This centers our sketch horizontally. */
   justify-content: center;
-
+  
   /* This centers our sketch vertically. */
   align-items: center;
 }
 
 canvas {
   display: block;
+}
+
+p {
+  text-overflow: inherit;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  
 }
