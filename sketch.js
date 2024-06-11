@@ -273,7 +273,7 @@ function gameScreen() {
   }
   
   // Check if the game is lost and display message accordingly
-  if (mistakes > 10) {
+  if (mistakes > 5) {
     gameLost = true;
     fill(0);
     textSize(28);
@@ -340,7 +340,7 @@ function startScreen() {
 
   fill(255);
   textAlign(CENTER, CENTER);
-  textSize(52);
+  textSize(72);
   text("Sudoku",width / 2, height / 2 - 80);
 }
 
