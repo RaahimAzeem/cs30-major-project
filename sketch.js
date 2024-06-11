@@ -20,6 +20,8 @@ let b = 0;
 let value = 0;
 let mistakes = 0;
 let levelDifficulty = "";
+let levelCompleted = false;
+let gameLost = false;
 
 let answerRevealed;
 let selectedCell = null;
@@ -162,7 +164,7 @@ class Cell2 {
 } 
 
 function setup() {
-  createCanvas(800, 650);
+  createCanvas(1000, windowHeight);
   // canvasPosition = createCanvas(windowWidth, windowHeight);
   // let canvasX = 500;
   // let canvasY = (windowHeight - 600)/2;
@@ -218,6 +220,7 @@ function buttons() {
   homeButton.onPress = function(){
     state = "start screen";
     numberSelected = null;
+    levelCompleted = false; 
   };
   homeButton.resize(180,50);
   homeButton.text = "Home";
@@ -301,8 +304,27 @@ function gameScreen() {
     }
   }
 
-  // instructions();
-  text("Mistakes: " + mistakes, 675, 100);
+  
+  // If all cells match, print the message
+  if (levelCompleted) {
+    fill(0);
+    textSize(28);
+    textAlign(LEFT);
+    text("LEVEL COMPLETED!", cols * w + 20, height/2 - 85);
+  }
+
+
+  instructions();
+  text("Mistakes: " + mistakes, cols * w + 20, rows * w - 10);
+
+  if (mistakes > 10) {
+    gameLost = true;
+    fill(0);
+    textSize(28);
+    textAlign(LEFT);
+    text("GAME LOST!", cols * w + 20, height/2 - 85);
+    // console.log("LEVEL FAILED. Please try again");
+  }
 }
 
 function safeToPlaceNumber(grid, y, x, num) {
@@ -339,12 +361,15 @@ function safeToPlaceNumber(grid, y, x, num) {
 
 function instructions() {
   fill(0);
-  textSize(30);
+  textSize(28);
   textAlign(LEFT);
-  text("Instructions:", 0, 20);
-  text("1. Place in numbers using the keyboard in the empty cells", 0 , 60);
-  text("2. Each row, column and 3x3 box must contain the numbers 1-9 once each", 0, 120);
-  text("3. You can use backspace to remove the number", 0, 180);
+  text("Instructions:", cols * w + 20, 20);
+  text("1. Place in numbers using the", cols * w + 20, 60);
+  text("keyboard in the empty cells", cols * w + 50, 100);
+  text("2. Each row, column and 3x3 box", cols * w + 20, 140);
+  text("must contain numbers 1-9 once.", cols * w + 50, 180);
+  text("3. You can use backspace to", cols * w + 20, 220);
+  text("remove the number.", cols * w + 50, 260);
 }
 
 function startScreen() {
@@ -360,6 +385,11 @@ function startScreen() {
 }
 
 function mousePressed() {
+
+  if (gameLost) {
+    return;
+  }
+
   if (state === "game screen") {
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
@@ -441,8 +471,9 @@ function keyPressed() {
         selectedCell = null;
         
         mistakes++;
-        console.log("ERROR! You have made " + mistakes + " mistakes!");
       }
+
+      gameWin();
     }
   }
   
@@ -456,31 +487,57 @@ function keyPressed() {
 }
 
 function revealAnswer() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      grid[y][x].value = solvedGrid[y][x].value;
-      grid[y][x].r = solvedGrid[y][x].r;
-      grid[y][x].g = solvedGrid[y][x].g;
-      grid[y][x].b = solvedGrid[y][x].b;
+  if (gameLost === "false") { 
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        grid[y][x].value = solvedGrid[y][x].value;
+        grid[y][x].r = solvedGrid[y][x].r;
+        grid[y][x].g = solvedGrid[y][x].g;
+        grid[y][x].b = solvedGrid[y][x].b;
+      }
     }
+
   }
   answerRevealed = true;
   gameWin();
 }
 
 function clearAnswer() {
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      grid[y][x].value = clearedGrid[y][x].value;
-      grid[y][x].r = clearedGrid[y][x].r;
-      grid[y][x].g = clearedGrid[y][x].g;
-      grid[y][x].b = clearedGrid[y][x].b;
+  levelCompleted = false;
+
+  if (gameLost === false) { 
+
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        grid[y][x].value = clearedGrid[y][x].value;
+        grid[y][x].r = clearedGrid[y][x].r;
+        grid[y][x].g = clearedGrid[y][x].g;
+        grid[y][x].b = clearedGrid[y][x].b;
+        
+      }
     }
   }
 }
 
 function gameWin() {
-  if (answerRevealed) {
-    console.log("LEVEL COMPLETED!");
+  let isCompleted = true;
+
+  // Check if every cell in the grid matches the corresponding cell in the solved grid
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      if (grid[y][x].value !== solvedGrid[y][x].value) {
+        isCompleted = false;
+        break;
+      }
+    }
+    
+    if (!isCompleted) {
+      break;
+    }
+  }
+
+  // If all cells match, print the message
+  if (isCompleted) {
+    levelCompleted = true;
   }
 }
