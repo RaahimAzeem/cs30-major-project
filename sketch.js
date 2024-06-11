@@ -134,8 +134,8 @@ function buttons() {
   easyButton = new Clickable();
   easyButton.locate(width / 2 - 100, height/2);
   easyButton.onPress = function(){
-    state = "game screen";
     levelDifficulty = "easy";
+    state = "game screen";
     initializeGrids(easyLevel);
   };
   easyButton.resize(200,50);
