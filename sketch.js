@@ -344,6 +344,7 @@ function startScreen() {
   text("Sudoku",width / 2, height / 2 - 80);
 }
 
+// Function for Mouse Activity
 function mousePressed() {
   // Prevent user interaction with the grid if game is lost
   if (gameLost) {
@@ -373,6 +374,7 @@ function mousePressed() {
   }
 }
 
+// Function for recursively solving the grid
 function solveGrid(grid, y = 0, x = 0) {
   // Solved the grid as a whole so returns true (Base Case)
   if (y === 9) {
@@ -408,6 +410,7 @@ function solveGrid(grid, y = 0, x = 0) {
   return false;
 }
 
+// Function for Keyboard Activity
 function keyPressed() {
   // Check if selected cell is empty or highlighted. Allows user to change their wrong answers as well.
   if (selectedCell && selectedCell.value === 0 || selectedCell && selectedCell.r !== 0) {
@@ -457,6 +460,7 @@ function keyPressed() {
   }
 }
 
+// Function for Reveal Answer Button
 function revealAnswer() {
   // Only reveal answer if game is not lost
   if (gameLost === false) { 
@@ -474,6 +478,7 @@ function revealAnswer() {
   gameWin();
 }
 
+// Function for Clear Button
 function clearAnswer() {
   // Reset level completion status
   levelCompleted = false;
@@ -492,6 +497,7 @@ function clearAnswer() {
   }
 }
 
+// Function to display Game Win Message
 function gameWin() {
   // Initialize a variable to track if the game is completed
   let isCompleted = true;
