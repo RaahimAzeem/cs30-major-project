@@ -5,7 +5,7 @@
 // Citations: 
 // https://masteringsudoku.com/sudoku-rules-beginners/
 // Extra for Experts:
-// - Recursion
+// - Recursion to solve sudoku levels.
 
 
 let easyButton, mediumButton, hardButton, homeButton, revealAnswerButton, clearButton;
