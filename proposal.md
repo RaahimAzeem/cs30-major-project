@@ -12,8 +12,6 @@ Sudoku
 - Once user gets all the correct answer, display a winning message.
 - If user makes more than a certain amount of errors, the game should end.
 - More than 1 difficulty level.
-- Sound Effects 
-
 
 ## Nice to Have List
 - Randomly generate different grids for each level, each time. 

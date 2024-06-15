@@ -7,17 +7,17 @@
 // Extra for Experts:
 // - 
 
-let state = "start screen";
-let counter = 0;
 let easyButton, mediumButton, hardButton, homeButton, revealAnswerButton, clearButton;
-let grid, solvedGrid;
+let grid, solvedGrid, clearedGrid, numberRow;
+
+let state = "start screen";
 let cols = 9; 
 let rows = 9;
 let w = 65;
 let r = 0;
 let g = 0;
 let b = 0;
-let value = 0;
+
 let mistakes = 0;
 let levelDifficulty = "";
 let levelCompleted = false;
@@ -25,10 +25,8 @@ let gameLost = false;
 
 let selectedCell = null;
 let numberSelected;
-let clearedGrid;
-let numberRow;
-
-let canvasPosition;
+let selectedCellFromNumberRow = null;
+let numberSelectedFromNumberRow;
 
 // Easy Level Sudoku Grid
 let easyLevel = [
@@ -69,6 +67,13 @@ let hardLevel = [
   [1, 0, 0, 7, 4, 0, 0, 0, 2],
 ];
 
+// Number Row Grid
+let numberRowSelect = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+
 // Defining a class for each cell in the grid
 class Cell {
   constructor(y, x, w, value, r, g, b) {
@@ -90,15 +95,6 @@ class Cell {
     noFill();
     square(this.x, this.y, this.w);
     
-
-    // Display number if cell has a value
-    if (this.value !== 0) {
-      textAlign(CENTER, CENTER);
-      textSize(30);
-      fill(this.r, this.g, this.b);
-      text(this.value, this.x + this.w / 2, this.y + this.w / 2);
-    }
-
     // Highlight cell if clicked or if it contains the selected number
     if (this.clicked && this.value === 0 || this.clicked && this.r !== 0) {
       fill(200, 200, 255, 150);
@@ -108,6 +104,14 @@ class Cell {
     if (this.value === numberSelected) {
       fill(200, 200, 255, 150);
       square(this.x, this.y, this.w);
+    }
+
+    // Display number if cell has a value
+    if (this.value !== 0) {
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      fill(this.r, this.g, this.b);
+      text(this.value, this.x + this.w / 2, this.y + this.w / 2);
     }
   }
 
@@ -123,9 +127,68 @@ class Cell {
   
 }
 
+// Defining a class for each cell in the Number Row grid
+class Cell2 {
+  constructor(y, x, w, value) {
+    // Initializing cell properties
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.value = value;
+    this.clicked = false;
+  }
+ 
+  // Function to display the cell
+  show() {
+    // Cell Borders
+    strokeWeight(2);
+    noFill();
+    square(this.x, this.y, this.w);
+   
+    // Display number if cell has a value
+    if (this.value !== 0) {
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      fill(0);
+      text(this.value, this.x + this.w / 2, this.y + this.w / 2);
+    }
+
+    if (this.clicked) {
+      fill(200, 200, 255, 150);
+      square(this.x, this.y, this.w);
+      fill(0);
+      text(this.value, this.x + this.w / 2, this.y + this.w / 2);
+    }
+  }
+
+
+  cellClicked(x, y) {
+    return x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w;
+  }
+ 
+  update() {
+    this.clicked = !this.clicked;
+  }
+}
+
+
 function setup() {
-  createCanvas(1000, windowHeight);
+  createCanvas(1200, windowHeight);
   buttons();
+  numberGrid();
+}
+
+function numberGrid() {
+  let startX = 10 * w + 90;  // Start position for the number row grid
+  let startY = 4.7 * w;  // Start position for the y-axis
+
+  numberRow = generateNumberGrid();
+
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      numberRow[y][x] = new Cell2(startY + y * w, startX + x * w,  w, numberRowSelect[y][x]);
+    }
+  }
 }
 
 function buttons() { 
@@ -168,7 +231,7 @@ function buttons() {
 
   // eslint-disable-next-line no-undef
   homeButton = new Clickable();
-  homeButton.locate(2,600);
+  homeButton.locate(2,700);
   homeButton.onPress = function(){
     state = "start screen";
     numberSelected = null;
@@ -181,7 +244,7 @@ function buttons() {
   
   // eslint-disable-next-line no-undef
   revealAnswerButton = new Clickable();
-  revealAnswerButton.locate(202,600);
+  revealAnswerButton.locate(202,700);
   revealAnswerButton.onPress = revealAnswer;
   revealAnswerButton.resize(180,50);
   revealAnswerButton.text = "Reveal Answer";
@@ -189,7 +252,7 @@ function buttons() {
 
   // eslint-disable-next-line no-undef
   clearButton = new Clickable();
-  clearButton.locate(402,600);
+  clearButton.locate(402,700);
   clearButton.onPress = clearAnswer;
   clearButton.resize(180,50);
   clearButton.text = "Clear ";
@@ -224,6 +287,15 @@ function generateGrid(cols, rows) {
   return emptyArray;
 }
 
+function generateNumberGrid() {
+  let emptyArray = new Array(3);
+  for (let i = 0; i < emptyArray.length; i++) {
+    emptyArray[i] = new Array(3);
+  }
+
+  return emptyArray;
+}
+
 function draw() {
   determineState();
 }
@@ -239,7 +311,7 @@ function determineState() {
 }
 
 function gameScreen() {
-  background(255);
+  background(204, 229, 255);
   homeButton.draw();
   revealAnswerButton.draw();
   clearButton.draw();
@@ -260,27 +332,22 @@ function gameScreen() {
       } 
     }
   }
-  
+
+  // Display the number selection grid
+  for (let y = 0; y < 3; y++) {
+    for (let x = 0; x < 3; x++) {
+      numberRow[y][x].show();
+    }
+  }
+
   instructions();
-  text("Mistakes: " + mistakes, cols * w + 20, rows * w - 10);
+  text("Mistakes: " + mistakes + "/6", 0, rows * w + 30);
 
   // If all cells match, print the message
-  if (levelCompleted) {
-    fill(0);
-    textSize(28);
-    textAlign(LEFT);
-    text("LEVEL COMPLETED!", cols * w + 20, height/2 - 85);
-  }
+  gameWinMessage();
   
   // Check if the game is lost and display message accordingly
-  if (mistakes > 5) {
-    gameLost = true;
-    fill(0);
-    textSize(28);
-    textAlign(LEFT);
-    text("GAME LOST!", cols * w + 20, height/2 - 85);
-    text("Click Home to try again.", cols * w + 20, height/2 - 45);
-  }
+  gameLostMessage();
 }
 
 // Function to check if it's safe to place a number in a cell
@@ -322,25 +389,25 @@ function instructions() {
   textSize(28);
   textAlign(LEFT);
   text("Instructions:", cols * w + 20, 20);
-  text("1. Place in numbers using the", cols * w + 20, 60);
-  text("keyboard in the empty cells", cols * w + 50, 100);
-  text("2. Each row, column and 3x3 box", cols * w + 20, 140);
-  text("must contain numbers 1-9 once.", cols * w + 50, 180);
-  text("3. You can use backspace to", cols * w + 20, 220);
-  text("remove the number.", cols * w + 50, 260);
+  text("1. Each row, column and 3x3 box must contain", cols * w + 20, 60);
+  text("the numbers 1-9 once each.", cols * w + 50, 100);
+  text("2. Place in numbers, using the keyboard or the", cols * w + 20, 140);
+  text("number grid below, in the empty cells.", cols * w + 50, 180);
+  text("3. You can use backspace to remove the number.", cols * w + 20, 220);
+  text("Number Grid", cols * w + 180, 280);
 }
 
 // Function to display the start screen
 function startScreen() {
-  background(0);
+  background(204, 229, 255);
   easyButton.draw();
   mediumButton.draw();
   hardButton.draw();
   mistakes = 0;
 
-  fill(255);
+  fill(0);
   textAlign(CENTER, CENTER);
-  textSize(72);
+  textSize(92);
   text("Sudoku",width / 2, height / 2 - 80);
 }
 
@@ -353,6 +420,26 @@ function mousePressed() {
 
   // Check if mouse click occurred on the game screen
   if (state === "game screen") {
+
+    // Clicking a cell from the Number Grid
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 3; x++) {
+        if (numberRow[y][x].cellClicked(mouseX,mouseY)) {
+          // Update selected cell
+          if (selectedCellFromNumberRow) {
+            selectedCellFromNumberRow.clicked = false;
+          }
+          numberRow[y][x].update();
+          selectedCellFromNumberRow = numberRow[y][x];
+          numberSelectedFromNumberRow = numberRow[y][x].value;
+          selectedCell.clicked = false;
+          selectedCell = null;
+          numberSelected = null;
+        }
+      }
+    }
+    
+    // Clicking a Cell from Sudoku Grid
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         if (grid[y][x].cellClicked(mouseX,mouseY)) {
@@ -360,6 +447,7 @@ function mousePressed() {
           if (selectedCell) {
             selectedCell.clicked = false;
           }
+
           grid[y][x].update();
           selectedCell = grid[y][x];
           numberSelected = null;
@@ -368,6 +456,38 @@ function mousePressed() {
           if (selectedCell.value !== 0) {
             numberSelected = selectedCell.value;
           }
+
+          if ((selectedCell.value === 0 || selectedCell.r !== 0) && numberSelectedFromNumberRow !== null) {
+            // Validate input against solved grid
+            if (numberSelectedFromNumberRow === solvedGrid[y][x].value) {
+              // Update cell properties for correct input
+              selectedCell.r = 0;
+              selectedCell.g = 0;
+              selectedCell.b = 0;
+              selectedCell.value = numberSelectedFromNumberRow;
+              numberSelectedFromNumberRow = null;
+              selectedCellFromNumberRow.clicked = false;
+              selectedCell.clicked = false;
+              selectedCell = null;
+              numberSelected = null;
+
+            }
+      
+            else {
+              // Update cell properties for incorrect input
+              selectedCell.r = 255;
+              selectedCell.g = 0;
+              selectedCell.b = 0;
+              selectedCell.value = numberSelectedFromNumberRow;
+              numberSelectedFromNumberRow = null;
+              selectedCellFromNumberRow.clicked = false;
+              selectedCell.clicked = false;
+              selectedCell = null;
+              numberSelected = null;
+              mistakes++;
+            }
+          }
+
         }
       }
     }
@@ -497,7 +617,6 @@ function clearAnswer() {
   }
 }
 
-// Function to display Game Win Message
 function gameWin() {
   // Initialize a variable to track if the game is completed
   let isCompleted = true;
@@ -522,5 +641,27 @@ function gameWin() {
   // If all cells match, update the variable to display the message
   if (isCompleted) {
     levelCompleted = true;
+  }
+}
+
+function gameWinMessage() {
+  if (levelCompleted) {
+    fill(0);
+    textSize(35);
+    textAlign(LEFT);
+    text("LEVEL COMPLETED!", 2 * w, rows * w + 70);
+  }
+}
+
+function gameLostMessage() {
+  // Check if the game is lost and display message accordingly
+  if (mistakes > 5) {
+    gameLost = true;
+    
+    fill(0);
+    textSize(28);
+    textAlign(LEFT);
+    text("GAME LOST! Click Home to try again.", 1.2 * w, rows * w + 75);
+    // text("Click Home to try again.", cols * w + 20, height/2 - 45);
   }
 }
