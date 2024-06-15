@@ -5,7 +5,8 @@
 // Citations: 
 // https://masteringsudoku.com/sudoku-rules-beginners/
 // Extra for Experts:
-// - 
+// - Recursion
+
 
 let easyButton, mediumButton, hardButton, homeButton, revealAnswerButton, clearButton;
 let grid, solvedGrid, clearedGrid, numberRow;
@@ -13,7 +14,7 @@ let grid, solvedGrid, clearedGrid, numberRow;
 let state = "start screen";
 let cols = 9; 
 let rows = 9;
-let w = 65;
+let w = 75;
 let r = 0;
 let g = 0;
 let b = 0;
@@ -97,12 +98,12 @@ class Cell {
     
     // Highlight cell if clicked or if it contains the selected number
     if (this.clicked && this.value === 0 || this.clicked && this.r !== 0) {
-      fill(200, 200, 255, 150);
+      fill(0, 153, 153, 150);
       square(this.x, this.y, this.w);
     }
 
     if (this.value === numberSelected) {
-      fill(200, 200, 255, 150);
+      fill(0, 153, 153, 150);
       square(this.x, this.y, this.w);
     }
 
@@ -128,7 +129,7 @@ class Cell {
 }
 
 // Defining a class for each cell in the Number Row grid
-class Cell2 {
+class CellForNumberGrid {
   constructor(y, x, w, value) {
     // Initializing cell properties
     this.x = x;
@@ -154,7 +155,7 @@ class Cell2 {
     }
 
     if (this.clicked) {
-      fill(200, 200, 255, 150);
+      fill(0, 153, 153, 150);
       square(this.x, this.y, this.w);
       fill(0);
       text(this.value, this.x + this.w / 2, this.y + this.w / 2);
@@ -173,20 +174,20 @@ class Cell2 {
 
 
 function setup() {
-  createCanvas(1200, windowHeight);
+  createCanvas(1250, windowHeight);
   buttons();
   numberGrid();
 }
 
 function numberGrid() {
-  let startX = 10 * w + 90;  // Start position for the number row grid
+  let startX = 10 * w + 110;  // Start position for the number row grid
   let startY = 4.7 * w;  // Start position for the y-axis
 
   numberRow = generateNumberGrid();
 
   for (let y = 0; y < 3; y++) {
     for (let x = 0; x < 3; x++) {
-      numberRow[y][x] = new Cell2(startY + y * w, startX + x * w,  w, numberRowSelect[y][x]);
+      numberRow[y][x] = new CellForNumberGrid(startY + y * w, startX + x * w,  w, numberRowSelect[y][x]);
     }
   }
 }
@@ -195,68 +196,68 @@ function buttons() {
   // Creating buttons for levels, reveal answer, home and clear answer.
   // eslint-disable-next-line no-undef
   easyButton = new Clickable();
-  easyButton.locate(width / 2 - 100, height/2);
+  easyButton.locate(width / 2 - 130, height/2);
   easyButton.onPress = function(){
     levelDifficulty = "easy";
     state = "game screen";
     initializeGrids(easyLevel);
   };
-  easyButton.resize(200,50);
+  easyButton.resize(250,75);
   easyButton.text = "Easy Level";
-  easyButton.textSize = 24;
+  easyButton.textSize = 30;
 
   // eslint-disable-next-line no-undef
   mediumButton = new Clickable();
-  mediumButton.locate(width / 2 - 100,height/2 + 100);
+  mediumButton.locate(width / 2 - 130,height/2 + 100);
   mediumButton.onPress = function(){
     state = "game screen";
     levelDifficulty = "medium";
     initializeGrids(mediumLevel);
   };
-  mediumButton.resize(200,50);
+  mediumButton.resize(250,75);
   mediumButton.text = "Medium Level";
-  mediumButton.textSize = 24;
+  mediumButton.textSize = 30;
 
   // eslint-disable-next-line no-undef
   hardButton = new Clickable();
-  hardButton.locate(width / 2 - 100,height/2 + 200);
+  hardButton.locate(width / 2 - 130,height/2 + 200);
   hardButton.onPress = function(){
     state = "game screen";
     levelDifficulty = "hard";
     initializeGrids(hardLevel);
   };
-  hardButton.resize(200,50);
+  hardButton.resize(250,75);
   hardButton.text = "Hard Level";
-  hardButton.textSize = 24;
+  hardButton.textSize = 30;
 
   // eslint-disable-next-line no-undef
   homeButton = new Clickable();
-  homeButton.locate(2,700);
+  homeButton.locate(2,10.5 * w);
   homeButton.onPress = function(){
     state = "start screen";
     numberSelected = null;
     gameLost = false;
     levelCompleted = false; 
   };
-  homeButton.resize(180,50);
+  homeButton.resize(220,75);
   homeButton.text = "Home";
-  homeButton.textSize = 24;
+  homeButton.textSize = 28;
   
   // eslint-disable-next-line no-undef
   revealAnswerButton = new Clickable();
-  revealAnswerButton.locate(202,700);
+  revealAnswerButton.locate(230,10.5 * w);
   revealAnswerButton.onPress = revealAnswer;
-  revealAnswerButton.resize(180,50);
+  revealAnswerButton.resize(220,75);
   revealAnswerButton.text = "Reveal Answer";
-  revealAnswerButton.textSize = 24;
+  revealAnswerButton.textSize = 28;
 
   // eslint-disable-next-line no-undef
   clearButton = new Clickable();
-  clearButton.locate(402,700);
+  clearButton.locate(458,10.5 * w);
   clearButton.onPress = clearAnswer;
-  clearButton.resize(180,50);
-  clearButton.text = "Clear ";
-  clearButton.textSize = 24;
+  clearButton.resize(220,75);
+  clearButton.text = "Clear";
+  clearButton.textSize = 28;
 }
 
 // Initialize grids based on the selected difficulty level
@@ -386,15 +387,18 @@ function safeToPlaceNumber(grid, y, x, num) {
 // Function to display instructions on the game screen
 function instructions() {
   fill(0);
-  textSize(28);
+  textSize(25);
   textAlign(LEFT);
   text("Instructions:", cols * w + 20, 20);
-  text("1. Each row, column and 3x3 box must contain", cols * w + 20, 60);
-  text("the numbers 1-9 once each.", cols * w + 50, 100);
-  text("2. Place in numbers, using the keyboard or the", cols * w + 20, 140);
-  text("number grid below, in the empty cells.", cols * w + 50, 180);
-  text("3. You can use backspace to remove the number.", cols * w + 20, 220);
-  text("Number Grid", cols * w + 180, 280);
+  text("1. Each row, column and 3x3 box must", cols * w + 20, 60);
+  text("contain the numbers 1-9 once each.", cols * w + 55, 100);
+  text("2. Enter numbers, using the keyboard or", cols * w + 20, 140);
+  text("number grid below, in the empty cells.", cols * w + 55, 180);
+  text("3. You can use backspace to remove the", cols * w + 20, 220);
+  text("number.", cols * w + 55, 260);
+  
+  textSize(30);
+  text("Number Grid", cols * w + 200, 330);
 }
 
 // Function to display the start screen
@@ -408,6 +412,7 @@ function startScreen() {
   fill(0);
   textAlign(CENTER, CENTER);
   textSize(92);
+  textFont("Verdana");
   text("Sudoku",width / 2, height / 2 - 80);
 }
 
@@ -649,7 +654,7 @@ function gameWinMessage() {
     fill(0);
     textSize(35);
     textAlign(LEFT);
-    text("LEVEL COMPLETED!", 2 * w, rows * w + 70);
+    text("LEVEL COMPLETED!", 2.1 * w, rows * w + 80);
   }
 }
 
