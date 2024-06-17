@@ -14,7 +14,7 @@ let grid, solvedGrid, clearedGrid, numberRow;
 let state = "start screen";
 let cols = 9; 
 let rows = 9;
-let w = 75;
+let w = 65;
 let r = 0;
 let g = 0;
 let b = 0;
@@ -232,32 +232,32 @@ function buttons() {
 
   // eslint-disable-next-line no-undef
   homeButton = new Clickable();
-  homeButton.locate(2,10.5 * w);
+  homeButton.locate(2,10.3 * w);
   homeButton.onPress = function(){
     state = "start screen";
     numberSelected = null;
     gameLost = false;
     levelCompleted = false; 
   };
-  homeButton.resize(220,75);
+  homeButton.resize(180,50);
   homeButton.text = "Home";
-  homeButton.textSize = 28;
+  homeButton.textSize = 26;
   
   // eslint-disable-next-line no-undef
   revealAnswerButton = new Clickable();
-  revealAnswerButton.locate(230,10.5 * w);
+  revealAnswerButton.locate(202,10.3 * w);
   revealAnswerButton.onPress = revealAnswer;
-  revealAnswerButton.resize(220,75);
+  revealAnswerButton.resize(180,50);
   revealAnswerButton.text = "Reveal Answer";
-  revealAnswerButton.textSize = 28;
+  revealAnswerButton.textSize = 25;
 
   // eslint-disable-next-line no-undef
   clearButton = new Clickable();
-  clearButton.locate(458,10.5 * w);
+  clearButton.locate(402,10.3 * w);
   clearButton.onPress = clearAnswer;
-  clearButton.resize(220,75);
+  clearButton.resize(180,50);
   clearButton.text = "Clear";
-  clearButton.textSize = 28;
+  clearButton.textSize = 25;
 }
 
 // Initialize grids based on the selected difficulty level
@@ -387,7 +387,7 @@ function safeToPlaceNumber(grid, y, x, num) {
 // Function to display instructions on the game screen
 function instructions() {
   fill(0);
-  textSize(25);
+  textSize(23);
   textAlign(LEFT);
   text("Instructions:", cols * w + 20, 20);
   text("1. Each row, column and 3x3 box must", cols * w + 20, 60);
@@ -397,8 +397,8 @@ function instructions() {
   text("3. You can use backspace to remove the", cols * w + 20, 220);
   text("number.", cols * w + 55, 260);
   
-  textSize(30);
-  text("Number Grid", cols * w + 200, 330);
+  textSize(25);
+  text("Number Grid", cols * w + 195, 280);
 }
 
 // Function to display the start screen
@@ -650,11 +650,12 @@ function gameWin() {
 }
 
 function gameWinMessage() {
+  // Check if the level is completed then display message accordingly
   if (levelCompleted) {
     fill(0);
-    textSize(35);
+    textSize(28);
     textAlign(LEFT);
-    text("LEVEL COMPLETED!", 2.1 * w, rows * w + 80);
+    text("LEVEL COMPLETED!", 2.1 * w, rows * w + 65);
   }
 }
 
@@ -664,9 +665,8 @@ function gameLostMessage() {
     gameLost = true;
     
     fill(0);
-    textSize(28);
+    textSize(24);
     textAlign(LEFT);
-    text("GAME LOST! Click Home to try again.", 1.2 * w, rows * w + 75);
-    // text("Click Home to try again.", cols * w + 20, height/2 - 45);
+    text("GAME LOST! Click Home to try again.", 1.2 * w, rows * w + 65);
   }
 }
